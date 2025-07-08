@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NeoGrid - Simulador Energético</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0c1f3f">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>NeoGrid - Ahorro Inteligente</title>
+  <meta name="theme-color" content="#0c1f3f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -16,106 +16,130 @@
       background-color: #f7f9fb;
       color: #222;
     }
+
     header, footer {
       background-color: #0c1f3f;
       color: #fff;
       text-align: center;
       padding: 30px 20px;
     }
+
     h1 {
       margin: 0;
       font-size: 2.5em;
     }
-    .tagline {
-      font-size: 1.2em;
-      color: #ccc;
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
     }
-    section {
-      padding: 40px 20px;
-      max-width: 900px;
-      margin: auto;
+
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .box {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+    ul {
+      padding-left: 1.2em;
     }
-    input, button {
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 1em;
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #0c1f3f;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #14396b;
-    }
-    .result {
-      font-weight: bold;
-      font-size: 1.1em;
-      margin-top: 20px;
+
+    footer {
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>NeoGrid</h1>
-    <p class="tagline">La energía del pueblo, para el pueblo</p>
+    <h1>🌱 NeoGrid</h1>
+    <p>Monitoreo inteligente de agua y energía</p>
   </header>
 
-  <section>
-    <div class="box">
-      <h2>Simulador de ahorro y ganancia</h2>
-      <label for="paneles">¿Cuántos paneles solares vas a instalar?</label><br/>
-      <input type="number" id="paneles" placeholder="Ej: 4" /><br/>
-
-      <label for="consumo">¿Cuánto consumís al mes? (en kWh)</label><br/>
-      <input type="number" id="consumo" placeholder="Ej: 300" /><br/>
-
-      <button onclick="calcular()">Calcular</button>
-
-      <div id="resultado" class="result"></div>
+  <section class="dashboard">
+    <div class="card">
+      <h2>Consumo de Energía (kWh)</h2>
+      <canvas id="energyChart"></canvas>
+    </div>
+    <div class="card">
+      <h2>Consumo de Agua (Litros)</h2>
+      <canvas id="waterChart"></canvas>
+    </div>
+    <div class="card">
+      <h2>Predicción de Factura</h2>
+      <p id="prediction">Cargando...</p>
+    </div>
+    <div class="card">
+      <h2>Logros Verdes</h2>
+      <ul id="achievements"></ul>
     </div>
   </section>
 
   <footer>
-    <p>&copy; 2025 NeoGrid. Energía del pueblo.</p>
+    <p>NeoGrid © 2025 - Desarrollado por Juan Aylagas</p>
   </footer>
 
   <script>
-    function calcular() {
-      const paneles = parseInt(document.getElementById("paneles").value);
-      const consumo = parseInt(document.getElementById("consumo").value);
-      const kwhPorPanel = 40;
-      const precioKwh = 0.15;
-      const excedenteVenta = 0.10;
+    // Datos de ejemplo (semana)
+    const energyData = [30, 28, 35, 33, 31, 29, 36]; // kWh
+    const waterData = [120, 110, 125, 130, 115, 100, 128]; // litros
 
-      if (isNaN(paneles) || isNaN(consumo) || paneles <= 0 || consumo <= 0) {
-        document.getElementById("resultado").innerText = "Por favor, ingresá valores válidos.";
-        return;
+    // Gráfico de energía
+    new Chart(document.getElementById("energyChart"), {
+      type: "line",
+      data: {
+        labels: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+        datasets: [{
+          label: "kWh",
+          data: energyData,
+          borderColor: "#0a8754",
+          fill: false
+        }]
       }
+    });
 
-      const produccionTotal = paneles * kwhPorPanel;
-      const ahorro = Math.min(produccionTotal, consumo) * precioKwh;
-      const excedente = Math.max(produccionTotal - consumo, 0);
-      const ganancia = excedente * excedenteVenta;
+    // Gráfico de agua
+    new Chart(document.getElementById("waterChart"), {
+      type: "line",
+      data: {
+        labels: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+        datasets: [{
+          label: "Litros",
+          data: waterData,
+          borderColor: "#0077b6",
+          fill: false
+        }]
+      }
+    });
 
-      document.getElementById("resultado").innerHTML = `
-        ✔️ Ahorro estimado en tu factura: <strong>$${ahorro.toFixed(2)} USD</strong><br/>
-        💰 Ganancia por excedente vendido: <strong>$${ganancia.toFixed(2)} USD</strong><br/>
-        🔋 Producción total mensual: <strong>${produccionTotal} kWh</strong>
-      `;
-    }
+    // Predicción de factura
+    const costoPorKwh = 0.15;
+    const costoPorLitro = 0.002;
+    const totalKwh = energyData.reduce((a, b) => a + b, 0);
+    const totalLitros = waterData.reduce((a, b) => a + b, 0);
+
+    const energiaEstimado = totalKwh * 4 * costoPorKwh;
+    const aguaEstimado = totalLitros * 4 * costoPorLitro;
+    const total = (energiaEstimado + aguaEstimado).toFixed(2);
+
+    document.getElementById("prediction").textContent =
+      `Aproximado mensual: $${total}`;
+
+    // Logros
+    const achievements = [];
+
+    if (Math.max(...energyData) < 40) achievements.push("✅ Consumo energético responsable");
+    if (Math.max(...waterData) < 140) achievements.push("💧 Buen uso del agua");
+    if (total < 40) achievements.push("🎯 Bajo costo mensual");
+
+    const list = document.getElementById("achievements");
+    achievements.forEach(logro => {
+      const li = document.createElement("li");
+      li.textContent = logro;
+      list.appendChild(li);
+    });
   </script>
 </body>
 </html>
